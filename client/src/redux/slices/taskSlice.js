@@ -28,6 +28,15 @@ export const deleteTask = createAsyncThunk('tasks/deleteTask', async (taskId, { 
     }
 });
 
+export const updateTask = createAsyncThunk('tasks/updateTask', async (taskId, taskData, { rejectWithValue }) => {
+    try {
+        await axios.put(`http://localhost:9000/api/tasks/${taskId}`, taskData);
+        return taskData;
+    } catch (error) {
+        return rejectWithValue(error.response.data.message || 'Failed to fetch tasks');
+    }
+});
+
 const taskSlice = createSlice({
     name: 'tasks',
     initialState: {
@@ -51,6 +60,22 @@ const taskSlice = createSlice({
                 state.tasks = [...state.tasks, action.payload.data];
             })
             .addCase(createTask.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(updateTask.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(updateTask.fulfilled, (state, action) => {
+                state.loading = false;
+
+                if (!action.payload.isSuccess) {
+                    return alert(action.payload.error)
+                }
+                const updatedTask = state.tasks.filter(task => task._id !== action.payload.data._id);
+                state.tasks = [...updatedTask, action.payload.data];
+            })
+            .addCase(updateTask.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })

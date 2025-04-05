@@ -1,32 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getTasks, createTask } from '../redux/slices/taskSlice';
+import { getTasks, } from '../redux/slices/taskSlice';
 import TaskComponent from './TaskComponent';
-import TaskModal from './TaskModal';
 
 const TaskListComponent = () => {
     const dispatch = useDispatch();
     const { activeBoard } = useSelector((state) => state.boards);
     const { tasks, loading, error } = useSelector((state) => state.tasks);
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         if (activeBoard) {
             dispatch(getTasks(activeBoard?._id));
         }
     }, [dispatch, JSON.stringify(activeBoard)]);
-
-    const handleCreateTask = async (taskData) => {
-        try {
-            const val = await dispatch(createTask(taskData)).unwrap();
-
-            debugger
-            console.log('val', val);
-
-            setIsModalOpen(false);
-        } catch (error) {
-        }
-    };
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -47,13 +33,6 @@ const TaskListComponent = () => {
                     ))}
                 </div>
             ))}
-            {isModalOpen && (
-                <TaskModal
-                    onClose={() => setIsModalOpen(false)}
-                    onSubmit={handleCreateTask}
-                    error={error}
-                />
-            )}
         </div>
     );
 };

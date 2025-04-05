@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-const Modal = ({ onClose, onSubmit, error }) => {
+const Modal = ({ onClose, onSubmit, error, listItem }) => {
     const { activeBoard } = useSelector((state) => state.boards);
-    const [formData, setFormData] = useState({ name: '', status: 'todo' });
+    const [formData, setFormData] = useState({ name: listItem?.name || '', status: listItem?.status || 'todo' });
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -11,11 +11,16 @@ const Modal = ({ onClose, onSubmit, error }) => {
     };
 
     const onChange = (e) => {
-        setFormData({
+        const data = {
             ...formData,
-            boardId: activeBoard._id,
             [e.target.id]: e.target.value,
-        });
+        }
+
+        if (!listItem) {
+            data.boardId = activeBoard._id;
+        }
+
+        setFormData(data);
     }
 
     return (
@@ -62,7 +67,7 @@ const Modal = ({ onClose, onSubmit, error }) => {
                             type="submit"
                             className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                         >
-                            Save
+                            Save Task {listItem ? 'Changes' : ''}
                         </button>
                     </div>
                 </form>

@@ -67,6 +67,18 @@ export const updateTask = async (req, res) => {
     updates.updatedAt = Date.now();
 
     try {
+        if (body.name) {
+            const task = await db.task.findOne({
+                _id: {
+                    $ne: taskId,
+                }, boardId, name: new RegExp(`^${body.name}$`, 'i')
+            });
+
+            if (task) {
+                return res.failure('Task Already Exists');
+            }
+        }
+
         const updated = await db.task.findByIdAndUpdate(taskId, updates, { new: true });
         if (!updated) return res.failure("Task not found");
         return res.data(updated);

@@ -2,7 +2,7 @@ import React from 'react';
 import LeftNavBar from './components/LeftNavBar';
 import TaskListComponent from './components/TaskListComponent';
 import { useSelector } from 'react-redux';
-import Modal from './components/TaskModal';
+import TaskModal from './components/TaskModal';
 import { useDispatch } from 'react-redux';
 import { createTask } from './redux/slices/taskSlice';
 
@@ -10,7 +10,7 @@ import { createTask } from './redux/slices/taskSlice';
 function App() {
     const dispatch = useDispatch();
     const [isModalOpen, setIsModalOpen] = React.useState(false);
-    const { boards, activeBoard, loading, error } = useSelector((state) => state.boards);
+    const { activeBoard, error } = useSelector((state) => state.boards);
 
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
@@ -45,7 +45,7 @@ function App() {
                 <TaskListComponent />
             </div>
             {isModalOpen && (
-                <Modal
+                <TaskModal
                     onClose={() => setIsModalOpen(false)}
                     onSubmit={handleCreateTask}
                     error={error}
