@@ -28,10 +28,10 @@ export const deleteTask = createAsyncThunk('tasks/deleteTask', async (taskId, { 
     }
 });
 
-export const updateTask = createAsyncThunk('tasks/updateTask', async (taskId, taskData, { rejectWithValue }) => {
+export const updateTask = createAsyncThunk('tasks/updateTask', async (payload, { rejectWithValue }) => {
     try {
-        await axios.put(`http://localhost:9000/api/tasks/${taskId}`, taskData);
-        return taskData;
+        const response = await axios.put(`http://localhost:9000/api/tasks/${payload.taskId}/board/${payload.boardId}`, payload.taskData);
+        return response.data;
     } catch (error) {
         return rejectWithValue(error.response.data.message || 'Failed to fetch tasks');
     }

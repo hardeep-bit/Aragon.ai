@@ -13,8 +13,11 @@ const TaskComponent = ({ task }) => {
     };
 
     const handleUpdateTask = async (taskData) => {
-        debugger
-        dispatch(updateTask(task._id, taskData));
+        dispatch(updateTask({
+            taskId: task._id,
+            boardId: task.boardId,
+            taskData,
+        }));
     };
 
     const handleModal = async (bool) => {

@@ -21,5 +21,5 @@ api.model('tasks')
     }, {
         action: 'PUT',
         method: 'updateTask',
-        url: '/:taskId',
+        url: '/:taskId/board/:boardId',
     }]);

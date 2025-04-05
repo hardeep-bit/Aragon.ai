@@ -62,16 +62,17 @@ export const deleteTask = async (req, res) => {
 };
 
 export const updateTask = async (req, res) => {
-    const { taskId } = req.params;
-    const updates = req.body;
-    updates.updatedAt = Date.now();
+    const { body, params } = req;
+    const { taskId, boardId } = params;
 
     try {
         if (body.name) {
             const task = await db.task.findOne({
                 _id: {
                     $ne: taskId,
-                }, boardId, name: new RegExp(`^${body.name}$`, 'i')
+                },
+                boardId: boardId,
+                name: new RegExp(`^${body.name}$`, 'i')
             });
 
             if (task) {
@@ -79,7 +80,9 @@ export const updateTask = async (req, res) => {
             }
         }
 
-        const updated = await db.task.findByIdAndUpdate(taskId, updates, { new: true });
+        body.updatedAt = Date.now();
+
+        const updated = await db.task.findByIdAndUpdate(taskId, body, { new: true });
         if (!updated) return res.failure("Task not found");
         return res.data(updated);
     } catch (error) {
