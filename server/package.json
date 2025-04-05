@@ -1,0 +1,14 @@
+{
+  "main": "src/app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "dependencies": {
+    "config": "^3.3.12",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "express-app-generator": "^1.0.6",
+    "mongoose": "^8.13.2"
+  }
+}

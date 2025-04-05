@@ -1,0 +1,12 @@
+{
+    "database": {
+        "url": "mongodb://localhost:27017/aragon-local"
+    },
+    "server": {
+        "port": "9000",
+        "apiURL": "http://localhost:9000"
+    },
+    "front": {
+        "url": "https://localhost:9001"
+    }
+}
