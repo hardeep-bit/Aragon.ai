@@ -39,6 +39,11 @@ const boardSlice = createSlice({
             })
             .addCase(createBoard.fulfilled, (state, action) => {
                 state.loading = false;
+
+                if (!action.payload.isSuccess) {
+                    return alert(action.payload.error)
+                }
+
                 state.boards = [...state.boards, action.payload.data];
                 state.activeBoard = action.payload.data;
             })

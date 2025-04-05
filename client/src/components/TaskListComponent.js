@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTasks, createTask } from '../redux/slices/taskSlice';
 import TaskComponent from './TaskComponent';
-import Modal from './TaskModal';
+import TaskModal from './TaskModal';
 
 const TaskListComponent = () => {
     const dispatch = useDispatch();
@@ -16,16 +16,15 @@ const TaskListComponent = () => {
         }
     }, [dispatch, JSON.stringify(activeBoard)]);
 
-    const handleAddTask = () => {
-        setIsModalOpen(true);
-    };
-
     const handleCreateTask = async (taskData) => {
         try {
-            await dispatch(createTask({ ...taskData, boardId: activeBoard._id }));
+            const val = await dispatch(createTask(taskData)).unwrap();
+
+            debugger
+            console.log('val', val);
+
             setIsModalOpen(false);
         } catch (error) {
-
         }
     };
 
@@ -49,10 +48,9 @@ const TaskListComponent = () => {
                 </div>
             ))}
             {isModalOpen && (
-                <Modal
+                <TaskModal
                     onClose={() => setIsModalOpen(false)}
                     onSubmit={handleCreateTask}
-                    initialData={{ name: '', status: 'todo', activeBoard }}
                     error={error}
                 />
             )}

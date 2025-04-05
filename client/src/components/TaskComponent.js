@@ -1,12 +1,20 @@
 import React from 'react';
+import { deleteTask } from '../redux/slices/taskSlice';
+import { useDispatch } from 'react-redux';
 
 const TaskComponent = ({ task, onDelete, onUpdate }) => {
+    const dispatch = useDispatch();
+
+    const handleDeleteTask = async (taskId) => {
+        dispatch(deleteTask(taskId));
+    };
+
     return (
         <div className="bg-gray-800 p-4 rounded mb-2 hover:bg-gray-700">
             <div>{task.name}</div>
             <button
                 className="mt-2 p-1 bg-red-500 text-white rounded hover:bg-red-600"
-                onClick={() => onDelete(task._id)}
+                onClick={() => handleDeleteTask(task._id)}
             >
                 Delete
             </button>
