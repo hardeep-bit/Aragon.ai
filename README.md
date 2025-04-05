@@ -51,7 +51,7 @@ Edit
 ```bash
 cd server
 npm install
-npm run dev
+npm start
 ```
 
 🧾 Notes
