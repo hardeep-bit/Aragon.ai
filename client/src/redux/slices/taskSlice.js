@@ -12,7 +12,7 @@ export const createTask = createAsyncThunk('tasks/createTask', async (taskData, 
 
 export const getTasks = createAsyncThunk('tasks/getTasks', async (boardId, { rejectWithValue }) => {
     try {
-        const response = await axios.get(`http://localhost:9000/api/tasks?boardId=${boardId}`);
+        const response = await axios.get(`http://localhost:9000/api/tasks/board/${boardId}`);
         return response.data;
     } catch (error) {
         return rejectWithValue(error.response.data.message || 'Failed to fetch tasks');
@@ -34,7 +34,7 @@ const taskSlice = createSlice({
             })
             .addCase(createTask.fulfilled, (state, action) => {
                 state.loading = false;
-                state.tasks.push(action.payload);
+                state.tasks = [...state.tasks, action.payload.data];
             })
             .addCase(createTask.rejected, (state, action) => {
                 state.loading = false;
@@ -45,7 +45,7 @@ const taskSlice = createSlice({
             })
             .addCase(getTasks.fulfilled, (state, action) => {
                 state.loading = false;
-                state.tasks = action.payload;
+                state.tasks = action.payload.items;
             })
             .addCase(getTasks.rejected, (state, action) => {
                 state.loading = false;

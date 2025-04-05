@@ -2,16 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTasks, createTask } from '../redux/slices/taskSlice';
 import TaskComponent from './TaskComponent';
-import Modal from './Modal';
+import Modal from './TaskModal';
 
-const TaskListComponent = ({ boardId }) => {
+const TaskListComponent = () => {
     const dispatch = useDispatch();
+    const { activeBoard } = useSelector((state) => state.boards);
     const { tasks, loading, error } = useSelector((state) => state.tasks);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
-        dispatch(getTasks(boardId));
-    }, [dispatch, boardId]);
+        if (activeBoard) {
+            dispatch(getTasks(activeBoard?._id));
+        }
+    }, [dispatch, JSON.stringify(activeBoard)]);
 
     const handleAddTask = () => {
         setIsModalOpen(true);
@@ -19,7 +22,7 @@ const TaskListComponent = ({ boardId }) => {
 
     const handleCreateTask = async (taskData) => {
         try {
-            await dispatch(createTask({ ...taskData, boardId }));
+            await dispatch(createTask({ ...taskData, boardId: activeBoard._id }));
             setIsModalOpen(false);
         } catch (error) {
 
@@ -43,19 +46,13 @@ const TaskListComponent = ({ boardId }) => {
                     {segregatedTasks[status].map((task) => (
                         <TaskComponent key={task._id} task={task} />
                     ))}
-                    <button
-                        className="mt-2 p-2 bg-purple-500 text-white rounded hover:bg-purple-600"
-                        onClick={handleAddTask}
-                    >
-                        + Add New Task
-                    </button>
                 </div>
             ))}
             {isModalOpen && (
                 <Modal
                     onClose={() => setIsModalOpen(false)}
                     onSubmit={handleCreateTask}
-                    initialData={{ name: '', status: 'todo', boardId }}
+                    initialData={{ name: '', status: 'todo', activeBoard }}
                     error={error}
                 />
             )}

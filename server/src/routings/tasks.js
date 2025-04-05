@@ -12,8 +12,8 @@ api.model('tasks')
         url: '/:taskId',
     }, {
         action: 'GET',
-        method: 'getTasks',
-        url: '/:boradId',
+        method: 'getTaskByBoardId',
+        url: '/board/:boardId',
     }, {
         action: 'DELETE',
         method: 'deleteTask',

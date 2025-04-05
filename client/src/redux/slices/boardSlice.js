@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export const createBoard = createAsyncThunk('boards/createBoard', async (name, { rejectWithValue }) => {
+export const createBoard = createAsyncThunk('boards/createBoard', async (payload, { rejectWithValue }) => {
     try {
-        const response = await axios.post('http://localhost:9000/api/boards', { name });
+        const response = await axios.post('http://localhost:9000/api/boards', payload);
         return response.data;
     } catch (error) {
         return rejectWithValue(error.response.data.message || 'Failed to create board');
@@ -23,10 +23,15 @@ const boardSlice = createSlice({
     name: 'boards',
     initialState: {
         boards: [],
+        activeBoard: null,
         loading: false,
         error: null,
     },
-    reducers: {},
+    reducers: {
+        changeActiveBoard: (state, action) => {
+            state.activeBoard = state.boards.find((board) => board._id === action.payload);
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(createBoard.pending, (state) => {
@@ -34,7 +39,8 @@ const boardSlice = createSlice({
             })
             .addCase(createBoard.fulfilled, (state, action) => {
                 state.loading = false;
-                state.boards.push(action.payload);
+                state.boards = [...state.boards, action.payload.data];
+                state.activeBoard = action.payload.data;
             })
             .addCase(createBoard.rejected, (state, action) => {
                 state.loading = false;
@@ -45,7 +51,8 @@ const boardSlice = createSlice({
             })
             .addCase(getBoards.fulfilled, (state, action) => {
                 state.loading = false;
-                state.boards = action.payload;
+                state.boards = action.payload.items;
+                state.activeBoard = action.payload.items[0] || null;
             })
             .addCase(getBoards.rejected, (state, action) => {
                 state.loading = false;
@@ -54,4 +61,5 @@ const boardSlice = createSlice({
     },
 });
 
+export const { changeActiveBoard } = boardSlice.actions;
 export default boardSlice.reducer;

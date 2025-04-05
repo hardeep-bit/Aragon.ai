@@ -1,7 +1,14 @@
+import mongoose from 'mongoose';
+
 const db = global.app.db;
 
 export const createTask = async (req, res) => {
-    const { name, boardId } = req.body;
+    const { name, boardId, status = 'todo' } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(boardId)) {
+        return res.failure('Invalid boardId');
+    }
+
     try {
         const task = await db.task.findOne({ boardId, name: new RegExp(`^${name}$`, 'i') });
 
@@ -12,6 +19,7 @@ export const createTask = async (req, res) => {
         const newTask = await db.task.create({
             name,
             boardId,
+            status,
             createdAt: Date.now(),
             updatedAt: Date.now(),
         });
@@ -32,10 +40,10 @@ export const getTask = async (req, res) => {
     }
 };
 
-export const getTasks = async (req, res) => {
-    const { boradId } = req.params;
+export const getTaskByBoardId = async (req, res) => {
+    const { boardId } = req.params;
     try {
-        const tasks = await db.task.find({ boradId });
+        const tasks = await db.task.find({ boardId: boardId });
         return res.page(tasks);
     } catch (error) {
         return res.failure(error.message);

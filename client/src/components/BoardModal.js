@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 
-const Modal = ({ onClose, onSubmit, initialData, error }) => {
-    const [formData, setFormData] = useState(initialData);
+const Modal = ({ onClose, onSubmit, error }) => {
+    const [formData, setFormData] = useState({ name: '' });
+
+    const onChange = (e) => {
+        setFormData({
+            name: e.target.value
+        });
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -11,32 +17,16 @@ const Modal = ({ onClose, onSubmit, initialData, error }) => {
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-gray-800 p-4 rounded shadow-lg w-1/3">
-                <h2 className="text-lg font-bold mb-4">Add New Task</h2>
+                <h2 className="text-lg font-bold mb-4">Add New Board</h2>
                 {error && <div className="text-red-500 mb-2">{error}</div>}
                 <form onSubmit={handleSubmit}>
                     <input
                         type="text"
                         value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        onChange={onChange}
                         className="w-full p-2 mb-2 bg-gray-700 text-white rounded"
-                        placeholder="Task Name"
-                        required
-                    />
-                    <select
-                        value={formData.status}
-                        onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                        className="w-full p-2 mb-2 bg-gray-700 text-white rounded"
-                    >
-                        <option value="todo">To Do</option>
-                        <option value="doing">Doing</option>
-                        <option value="done">Done</option>
-                    </select>
-                    <input
-                        type="text"
-                        value={formData.boardId}
-                        disabled
-                        className="w-full p-2 mb-2 bg-gray-600 text-white rounded"
                         placeholder="Board Name"
+                        required
                     />
                     <div className="flex justify-end space-x-2">
                         <button
